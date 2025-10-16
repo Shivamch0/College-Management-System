@@ -99,7 +99,7 @@ const loginUser = asyncHandler(async(req , res) => {
     }, 
     "User Logged in Successfully..."))
 
-})
+});
 
 const logoutUser = asyncHandler( async (req , res) => {
 
@@ -127,10 +127,58 @@ const logoutUser = asyncHandler( async (req , res) => {
     .status(200)
     .json(new ApiResponse(200 , {} , "User Logout Successfully..."))
 
+});
+
+const refreshAccessToken = asyncHandler(async (req , res) => {
+    const incommingRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
+    if(!incommingRefreshToken){
+        throw new ApiError(401 , "Refresh Token is missing");
+    }
+
+    try {
+        const decoded = jwt.verify(incommingRefreshToken , process.env.REFRESH_TOKEN_SECRET);
+
+        const user = await User.findById(decoded?._id);
+        if(!user){
+            throw new ApiError(401 , "User not found...")
+        }
+
+        if(user.refreshToken !== incommingRefreshToken){
+            throw new ApiError(401 , "Invalid refresh Token...")
+        }
+
+        const accessToken = await user.generateAccessToken();
+        const newRefreshToken = await user.generateRefreshToken();
+
+        user.refreshToken = newRefreshToken;
+        await user.save({validateBeforeSave : false})
+
+        const options = {
+            httpOnly : true,
+            secure : process.env.NODE_ENV === "production",
+            sameSite : "Strict",
+            maxAge  : 7 * 24 * 60 * 60 * 1000
+        }
+
+        return res
+                .status(200)
+                .cookie("accessToken" , accessToken , options)
+                .cookie("refreshToken" , newRefreshToken , options)
+                .json(new ApiResponse(
+                    200 , 
+                    {accessToken , refreshToken : newRefreshToken} ,
+                    "AccessToken refresh Successfully..."
+                    )
+                );
+    } catch (error) {
+        throw new ApiError(401 , "Invalid or Expired Refresh Token...")
+    }
+});
+
+const getCurrentUser = asyncHandler (async (req , res) => {
+    const user = req.user; 
+
+    return res.status(200).json(new ApiResponse(200 , {user} , "Current User Fetched Successfully..."))
 })
 
-
-
-
-
-export { registerUser , loginUser , logoutUser }
+export { registerUser , loginUser , logoutUser , refreshAccessToken , getCurrentUser }
