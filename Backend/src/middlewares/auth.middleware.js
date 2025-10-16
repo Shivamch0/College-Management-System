@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user.models.js";
 
 const verifyJWT = asyncHandler (async (req , res , next) => {
-    try {
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer " , "");
     if(!token){
         throw new ApiError(401 , "Unauthorized request: Token missing...");
@@ -19,9 +18,6 @@ const verifyJWT = asyncHandler (async (req , res , next) => {
 
     req.user = user;
     next();
-    } catch (error) {
-        throw new ApiError(401 , "Invalid or Expired Token...")
-    }
 });
 
 export { verifyJWT }

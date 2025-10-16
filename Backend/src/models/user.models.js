@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     },
     role : {
         type : String,
-        enum : ["Admin" , "Faculty" , "Student"] , default : "Student",
+        enum : ["Admin" , "Organizer" , "Student"] , default : "Student",
         required : true
     },
     registeredEvents : [

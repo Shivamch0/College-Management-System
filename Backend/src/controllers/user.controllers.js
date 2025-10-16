@@ -134,8 +134,7 @@ const refreshAccessToken = asyncHandler(async (req , res) => {
     if(!incommingRefreshToken){
         throw new ApiError(401 , "Refresh Token is missing");
     }
-
-    try {
+    
         const decoded = jwt.verify(incommingRefreshToken , process.env.REFRESH_TOKEN_SECRET);
 
         const user = await User.findById(decoded?._id);
@@ -170,9 +169,6 @@ const refreshAccessToken = asyncHandler(async (req , res) => {
                     "AccessToken refresh Successfully..."
                     )
                 );
-    } catch (error) {
-        throw new ApiError(401 , "Invalid or Expired Refresh Token...")
-    }
 });
 
 const getCurrentUser = asyncHandler (async (req , res) => {

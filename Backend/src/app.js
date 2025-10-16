@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.routes.js"
+import eventRouter from "./routes/events.routes.js"
 
 const app = express();
 
@@ -17,7 +18,8 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 // Routes //
-app.use("/api/v1/users" , userRouter)
+app.use("/api/v1/users" , userRouter);
+app.use("/api/v1/events" , eventRouter);
 
 app.get("/" , (req , res) => {
     res.send("CEMS Backend API is running...")
