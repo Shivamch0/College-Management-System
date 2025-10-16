@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import userRouter from "./routes/user.routes.js"
 
 const app = express();
 
@@ -14,5 +15,12 @@ app.use(express.urlencoded({extended : true , limit : "16kb"}));
 app.use(express.static("public"));
 
 app.use(cookieParser());
+
+// Routes //
+app.use("/api/v1/users" , userRouter)
+
+app.get("/" , (req , res) => {
+    res.send("CEMS Backend API is running...")
+})
 
 export default app;

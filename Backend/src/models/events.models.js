@@ -7,7 +7,6 @@ const eventSchema = new mongoose.Schema({
     },
     description : {
         type : String,
-        required : true
     },
     date : {
         type : Date,
@@ -17,25 +16,38 @@ const eventSchema = new mongoose.Schema({
         type : String,
         required : true
     },
-    capacity : {
-        type : Number,
-        required : true
+    eventType: {
+        type: String,
+        enum: ["Cultural", "Technical", "Sports", "Workshop", "Seminar" ,"Other"],
+        default: "Cultural"
     },
-    organizer : {
+    currentParticipants: {
+        type: Number,
+        default: 0
+    },
+    maxParticipants: {
+        type: Number,
+        default: 100
+    },
+    createdBy : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "User",
         required : true
     },
-    participants : {
+    participants : [
+        {
         type : mongoose.Schema.Types.ObjectId,
         ref : "User",
-        required : true
-    },
-    volunteers : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
+        }
+    ],
+    status : {
+        type : String,
+        enum : ["pending", "approved" , "rejected"],
+         default : "pending",
         required : true
     },
 } , {timestamps : true});
+
+
 
 export const Event = mongoose.model("Event" , eventSchema);
