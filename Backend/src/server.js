@@ -4,11 +4,13 @@ import { connectDb } from "./db/index.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
+
 dotenv.config({
     path : ".env",
 })
 
 const port = process.env.PORT || 4000;
+
 
 const server = createServer(app);
 const io = new Server(server , {

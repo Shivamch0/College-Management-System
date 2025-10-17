@@ -3,7 +3,6 @@ import {asyncHandler} from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 
 // Register User //
 const registerUser = asyncHandler (async (req , res) => {
@@ -24,7 +23,7 @@ const registerUser = asyncHandler (async (req , res) => {
         userName : userName.toLowerCase(),
         email : email.toLowerCase(),
         password,
-        role
+        role 
     });
 
     const accessToken = await user.generateAccessToken();

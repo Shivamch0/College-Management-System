@@ -11,7 +11,7 @@ router.route("/").get(getAllEvents);
 router.route("/:id").get(getEventByID);
 
 router.route("/create").post(verifyJWT ,
-                            authorizeRoles("Admin" , "Organizer"),
+                            authorizeRoles("admin" , "organizer"),
                             [
                                 body("title").notEmpty().withMessage("Title is required..."),    
                                 body("date").notEmpty().withMessage("Date is required..."),    
@@ -20,12 +20,12 @@ router.route("/create").post(verifyJWT ,
                             validate,
                             createEvent);
 
-router.route("/:id/update").put(verifyJWT , authorizeRoles("Admin" , "Organizer") , updateEvent);
+router.route("/:id/update").put(verifyJWT , authorizeRoles("admin" , "organizer") , updateEvent);
 
-router.route("/:id/delete").delete(verifyJWT , authorizeRoles("Admin" , "Organizer") , deleteEvent);
+router.route("/:id/delete").delete(verifyJWT , authorizeRoles("admin" , "organizer") , deleteEvent);
 
-router.route("/:id/register").post(verifyJWT , authorizeRoles("Student") , registerForEvent);
-router.route("/:id/cancel").post(verifyJWT , authorizeRoles("Student") , cancelRegistration);
+router.route("/:id/register").post(verifyJWT , authorizeRoles("student") , registerForEvent);
+router.route("/:id/cancel").post(verifyJWT , authorizeRoles("student") , cancelRegistration);
 
 
 

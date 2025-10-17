@@ -30,14 +30,13 @@ const userSchema = new mongoose.Schema({
     },
     role : {
         type : String,
-        enum : ["Admin" , "Organizer" , "Student"] , default : "Student",
+        enum : ["admin" , "organizer" , "student"] , default : "student",
         required : true
     },
     registeredEvents : [
         {
         type : mongoose.Schema.Types.ObjectId,
         ref : "Event",
-        required :true,
         default : []
         }
     ],
@@ -60,7 +59,7 @@ userSchema.methods.generateAccessToken =  function () {
     return jwt.sign({
         _id : this._id,
         email : this.email,
-        username : this.username,
+        username : this.userName,
         fullname : this.fullName,
         role : this.role
         },
