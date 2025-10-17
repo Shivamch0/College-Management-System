@@ -1,7 +1,9 @@
 import {asyncHandler} from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
-import  { Event } from "../models/events.models.js"
+import  { Event } from "../models/events.models.js";
+import { io } from "../server.js";
+import { sendEmail } from "../utils/email.js";
 
 const createEvent = asyncHandler ( async (req , res) => {
     const {title , description , date , venue , eventType , maxParticipants} = req.body;
@@ -18,6 +20,14 @@ const createEvent = asyncHandler ( async (req , res) => {
         maxParticipants,
         createdBy : req.user._id,
     })
+
+    io.emit("Event Created..." , event);
+
+    await sendEmail(
+        req.user.email,
+        "Event Created Successfully...",
+        `You have Successfully Created an ${event.title} event that was going to held on ${event.date} at ${event.venue}`
+    )
 
     return res.status(200).json(new ApiResponse(200 , event , "Event Created Successfully..."));
 });
@@ -55,6 +65,14 @@ const registerForEvent = asyncHandler ( async (req , res) => {
     event.currentParticipants++;
     await event.save({validateBeforeSave : false});
 
+    await sendEmail(
+        req.user.email,
+        "Event Registration Successfully...",
+        `You have successufully registered for ${event.title} that is going to held on ${event.date} at ${event.venue}.`
+    )
+
+    io.emit("Event Updated..." , event);
+
     return res
         .status(200)
         .json(new ApiResponse(200, event, "Registered for event successfully."));
@@ -72,6 +90,14 @@ const cancelRegistration = asyncHandler ( async (req , res) => {
     event.currentParticipants = event.participants.length;
     await event.save({validateBeforeSave : false})
 
+    await sendEmail(
+        req.user.email,
+        "Cancel Registration...",
+        `You have canceled your registration successfully... for ${event.title} that was going to held on ${event.date} at ${event.venue}`
+    )
+
+    io.emit("Event Updated..." , event);
+
     return res.status(200).json(new ApiResponse(200 , event , "Registration cancelled successfully..."))
 });
 
@@ -81,6 +107,14 @@ const updateEvent = asyncHandler ( async (req , res) => {
         throw new ApiError(401 , "Event not found...");
     }
 
+    await sendEmail(
+        req.user.email,
+        "Update Event",
+        `You have successfully update the ${event.title} that was going to held on ${event.date} at ${event.veue}`
+    )
+
+    io.emit("Event Updated..." , event);
+
     return res.status(200).json(new ApiResponse(200 , event , "Event Update Successfully..."))
 });
 
@@ -89,6 +123,14 @@ const deleteEvent = asyncHandler ( async (req , res) => {
     if(!event){
         throw new ApiError(401 , "Event not found...");
     }
+
+     await sendEmail(
+        req.user.email,
+        "Delete Event",
+        `You have successfully delete the ${event.title} that was going to held on ${event.date} at ${event.veue}`
+    )
+
+    io.emit("Event Updated..." , event);
 
     return res.status(200).json(new ApiResponse(200 , event , "Event Delete Successfully..."))
 });
