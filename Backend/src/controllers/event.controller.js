@@ -33,8 +33,54 @@ const createEvent = asyncHandler ( async (req , res) => {
 });
 
 const getAllEvents = asyncHandler ( async (req , res) => {
-    const events = await Event.find().populate("createdBy" , "userName email")
-    return res.status(200).json(new ApiResponse(200 , events , "All events fetched successfully..."))
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page -1) * limit;
+
+    const { search, eventType, startDate, endDate } = req.query;
+
+    const query = {}
+
+    if(search){
+        query.$or = [
+            {title : {$regex : search , $options : "i"}},
+            {description: {$regex : search , $options : "i"}}
+        ];
+    }
+
+    if(eventType){
+        query.eventType = eventType;
+    }
+
+    if(startDate || endDate){
+        query.date = {};
+        if(startDate) query.date.$gte = startDate;
+        if(endDate) query.date.$lte = endDate;
+
+    }
+
+    const sortField = sortBy || "date";
+    const sortDirection = sortOrder === "asc" ? 1 : -1;
+
+    const events = await Event.find(query).populate("createdBy" , "userName email").sort({ [sortField] : sortDirection}).skip(skip).limit(limit);
+
+    const totalEvents = await Event.countDocuments(query);
+    const totalPages = Math.ceil(totalEvents / limit);
+
+    return res.status(200).json(
+        new ApiResponse(
+            200 ,
+             {
+                events,
+                currentPage : page,
+                totalPages,
+                totalEvents,
+                pageSize : limit
+             } , 
+             "All events fetched successfully with pagination..."
+        )
+    )
 
 });
 
@@ -110,7 +156,7 @@ const updateEvent = asyncHandler ( async (req , res) => {
     await sendEmail(
         req.user.email,
         "Update Event",
-        `You have successfully update the ${event.title} that was going to held on ${event.date} at ${event.veue}`
+        `You have successfully update the ${event.title} that was going to held on ${event.date} at ${event.venue}`
     )
 
     io.emit("Event Updated..." , event);
@@ -127,7 +173,7 @@ const deleteEvent = asyncHandler ( async (req , res) => {
      await sendEmail(
         req.user.email,
         "Delete Event",
-        `You have successfully delete the ${event.title} that was going to held on ${event.date} at ${event.veue}`
+        `You have successfully delete the ${event.title} that was going to held on ${event.date} at ${event.venue}`
     )
 
     io.emit("Event Updated..." , event);

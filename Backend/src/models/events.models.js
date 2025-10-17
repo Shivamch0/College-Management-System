@@ -19,7 +19,7 @@ const eventSchema = new mongoose.Schema({
     eventType: {
         type: String,
         enum: ["Cultural", "Technical", "Sports", "Workshop", "Seminar" ,"Other"],
-        default: "Cultural"
+        default: ""
     },
     currentParticipants: {
         type: Number,
