@@ -1,86 +1,160 @@
-.header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #1e293b;
-    border-radius: 15px;
+/* 🌙 Navbar.module.css */
+
+/* --- Header Layout --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  border-radius: 20px;
+  margin: 20px 40px 0 40px;
+  transition: background 0.5s ease, color 0.4s ease;
+  backdrop-filter: blur(10px); /* glass effect */
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* --- DARK MODE NAVBAR --- */
+.header.dark {
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.85), rgba(30, 41, 59, 0.85));
+  color: #f1f5f9;
+}
+
+/* --- LIGHT MODE NAVBAR --- */
+.header.light {
+  background: linear-gradient(to bottom, rgba(241, 245, 249, 0.85), rgba(226, 232, 240, 0.85));
+  color: #1e293b;
+}
+
+/* --- Logo --- */
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .header a{
-    text-decoration: none;
+  text-decoration: none;
 }
 
-.logo{
-    display: flex;
-    align-items: center;
-} 
-
-.img{
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-    border-radius: 50%;
+.logoHeading {
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.4s ease;
 }
 
-.logoHeading{
-    color: #ffffff;
-    font-size: 24px;
-    font-weight: bold;
-    text-decoration: none;
+.header.dark .logoHeading {
+  color: #ffffff;
+  
 }
 
-.navLinks{
-    display: flex;
-    gap: 30px;
+.header.light .logoHeading {
+  color: #1e293b;
 }
 
-.navLinks a{
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 16px;
+.header.dark .logoHeading:hover {
+  color: #3b82f6; /* theme blue */
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.8),
+               0 0 16px rgba(59, 130, 246, 0.6);
+  transform: scale(1.05);
 }
 
-/* ==== TOGGLE SWITCH ==== */
+.header.light .logoHeading:hover {
+  color: #3b82f6;
+  text-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+  transform: scale(1.05);
+}
+
+/* --- Navigation Links --- */
+.navLinks {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.navLinks a {
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.3s ease, transform 0.2s ease;
+  color: white;
+}
+
+.navLinks a:hover {
+  transform: translateY(-2px);
+}
+
+/* 🎨 Link Colors by Theme */
+.header.dark .navLinks a {
+  color: #ffffff;
+}
+
+.header.dark .navLinks a:hover {
+  color: #60a5fa;
+  text-shadow: 0 0 8px rgba(96, 165, 250, 0.8),
+               0 0 12px rgba(37, 99, 235, 0.6);
+}
+
+.header.light .navLinks a {
+  color: #1e293b;
+}
+
+.header.light .navLinks a:hover {
+  color: #2563eb;
+  text-shadow: 0 0 6px rgba(37, 99, 235, 0.3);
+}
+
+/* --- Toggle Switch --- */
 .switchLabel {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
+  display: inline-block;
+  width: 42px;
+  height: 22px;
 }
 
 .switchInput {
-  display: none;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
 .switchSlider {
-  position: relative;
-  width: 2.5rem; /* same as w-10 */
-  height: 1.25rem; /* same as h-5 */
-  background-color: #4b5563; /* gray-600 */
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #64748b;
   border-radius: 9999px;
-  transition: background-color 0.3s ease;
+  transition: 0.3s;
 }
 
-.switchSlider::after {
+.switchSlider::before {
   content: "";
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 1rem; /* 16px */
-  height: 1rem;
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
   background-color: white;
   border-radius: 50%;
-  border: 1px solid #d1d5db; /* gray-300 */
-  transition: transform 0.3s ease;
+  transition: 0.3s;
 }
 
-/* When checked */
 .switchInput:checked + .switchSlider {
-  background-color: #2563eb; /* blue-600 */
+  background-color: #2563eb;
 }
 
-.switchInput:checked + .switchSlider::after {
-  transform: translateX(1.25rem); /* slide right */
-  border-color: white;
+.switchInput:checked + .switchSlider::before {
+  transform: translateX(20px);
 }
+

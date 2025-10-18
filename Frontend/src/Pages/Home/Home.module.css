@@ -32,33 +32,44 @@
     gap: 1rem;
 }
 
-.startBtn{
-    background-color: #3b82f6; /* blue-500 */
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 0.375rem; /* rounded-md */
-    margin-right: 1rem;
-    cursor: pointer;
-    font-size: 1rem;
+.startBtn,
+.viewBtn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: white;
+  transition: all 0.4s ease;
+  background-size: 200% auto;
+  background-position: left center;
 }
 
-.startBtn:hover{
-    background-color: #2563eb; /* blue-600 */
+.startBtn:hover,
+.viewBtn:hover {
+  background-position: right center;
+  transform: translateY(-2px);
 }
 
-.viewBtn{
-    background-color: #1e293b;
-    padding: 0.75rem 1.5rem;
-    color:white;
-    border: none;
-    border-radius: 0.375rem; /* rounded-md */
-    cursor: pointer;
-    font-size: 1rem;
+.dark .startBtn {
+  background-image: linear-gradient(to right, #2563eb, #3b82f6, #60a5fa);
+  color: white;
 }
 
-.viewBtn:hover{
-    background-color: #334155; /* gray-700 */
+.dark .viewBtn {
+  background-image: linear-gradient(to right, #1e293b, #334155, #475569);
+  color: white;
+}
+
+/* ☀️ Light Mode Buttons */
+.light .startBtn {
+  background-image: linear-gradient(to right, #3b82f6, #60a5fa, #93c5fd);
+  color: #ffffff;
+}
+
+.light .viewBtn {
+  background-image: linear-gradient(to right, #e2e8f0, #cbd5e1, #94a3b8);
+  color: #1e293b;
 }
 
 .featuresSection{
@@ -129,4 +140,58 @@
 
 .featuresSection button:hover{
     background-color: #334155; 
+}
+
+/* 🆕 --- Theme Containers --- */
+.dark {
+  background: linear-gradient(to bottom, #0f172a, #1e293b);
+  color: white;
+}
+
+.light {
+  background: linear-gradient(to bottom, #f8fafc, #e2e8f0);
+  color: #1e293b;
+}
+
+/* 🆕 Adjust feature cards for light mode */
+.light .featureItem {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.light .featureItem p {
+  color: #475569;
+}
+
+.light .viewBtn {
+  background-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.light .viewBtn:hover {
+  background-color: #94a3b8;
+}
+
+.light .startBtn {
+  background-color: #2563eb;
+}
+
+.light .startBtn:hover {
+  background-color: #1d4ed8;
+}
+
+.dark .secondLine {
+  color: #ffffff;
+}
+
+.dark .para {
+  color: #d1d5db;
+}
+
+.light .secondLine {
+  color: #1e293b;
+}
+
+.light .para {
+  color: #334155;
 }
