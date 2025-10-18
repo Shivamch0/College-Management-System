@@ -1,0 +1,86 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #1e293b;
+    border-radius: 15px;
+}
+
+.header a{
+    text-decoration: none;
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+} 
+
+.img{
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.logoHeading{
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navLinks{
+    display: flex;
+    gap: 30px;
+}
+
+.navLinks a{
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+/* ==== TOGGLE SWITCH ==== */
+.switchLabel {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.switchInput {
+  display: none;
+}
+
+.switchSlider {
+  position: relative;
+  width: 2.5rem; /* same as w-10 */
+  height: 1.25rem; /* same as h-5 */
+  background-color: #4b5563; /* gray-600 */
+  border-radius: 9999px;
+  transition: background-color 0.3s ease;
+}
+
+.switchSlider::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1rem; /* 16px */
+  height: 1rem;
+  background-color: white;
+  border-radius: 50%;
+  border: 1px solid #d1d5db; /* gray-300 */
+  transition: transform 0.3s ease;
+}
+
+/* When checked */
+.switchInput:checked + .switchSlider {
+  background-color: #2563eb; /* blue-600 */
+}
+
+.switchInput:checked + .switchSlider::after {
+  transform: translateX(1.25rem); /* slide right */
+  border-color: white;
+}
