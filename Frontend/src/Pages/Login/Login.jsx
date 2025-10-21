@@ -3,6 +3,7 @@ import styles from "./Login.module.css";
 import {Formik , useFormik } from "formik"
 import {Link, useNavigate} from "react-router-dom"
 import { loginSchema } from '../../schemas/loginSchema';
+import { api } from '../../api/axios.js';
 
 function Login() {
 
@@ -14,9 +15,16 @@ function Login() {
       password : ""
     },
     validationSchema : loginSchema,
-    onSubmit : (values , action) => {
-      action.resetForm();
-      navigate("/")
+    onSubmit : async (values , action) => {
+      try {
+        const response = await api.post("/users/login" , values);
+        console.log("login successfully..." , response);
+        action.resetForm();
+        navigate("/");
+      } catch (error) {
+        console.error("Login failed:", error.response?.data || error.message);
+        alert(error.response?.data?.message || "Login failed. Please try again.");
+      }
     }
   })
   return (

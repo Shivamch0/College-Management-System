@@ -3,6 +3,7 @@ import styles from "./SignUp.module.css";
 import {Formik , useFormik } from "formik"
 import {Link, useNavigate} from "react-router-dom"
 import { signUpSchema } from '../../schemas/signupSchema';
+import { api } from '../../api/axios';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -16,10 +17,20 @@ function SignUp() {
       role : ""
     },
     validationSchema : signUpSchema,
-    onSubmit : (values , action) => {
-      alert(`Account Created Successfully ${values.fullName}`);
-      action.resetForm();
-      navigate("/login")
+    onSubmit : async (values , action) => {
+      try {
+        console.log("📡 Sending to:", api.defaults.baseURL + "/users/register");
+        const response = await api.post("/users/register" , values)
+        console.log("Registration succefully..." , response)
+
+        alert(`Account Created Successfully ${values.fullName}`);
+        action.resetForm();
+        navigate("/login")
+      } catch (error) {
+        console.error("Signup failed:", error.response?.data || error.message);
+        alert(error.response?.data?.message || "Signup failed. Please try again.");
+      }
+    
     }
   })
   return (
