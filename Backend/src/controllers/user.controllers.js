@@ -43,7 +43,7 @@ const registerUser = asyncHandler (async (req , res) => {
     const options = {
         httpOnly : true,
         secure : process.env.NODE_ENV === "production",
-        sameSite : "Strict",
+        sameSite : "None",
         maxAge : 7 * 24 * 60 * 60 * 1000
     };
 
@@ -79,29 +79,31 @@ const loginUser = asyncHandler(async(req , res) => {
     user.refreshToken = refreshToken;
     await user.save({validateBeforeSave : false})
 
-    const options = {
-        httpOnly : true,
-        secure : process.env.NODE_ENV === "production",
-        sameSite : "Strict",
-        maxAge : 7 * 24 * 60 * 60 * 1000
+    const accessTokenOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "None",
+    maxAge: 15 * 60 * 1000 // 15 min
+    };
+
+    const refreshTokenOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     };
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
     return res.status(200)
-    .cookie("accessToken" , accessToken , options)
-    .cookie("refreshToken" , refreshToken , options)
-    .json(new ApiResponse(200 , {
-        user : loggedInUser,
-        accessToken,
-        refreshToken
-    }, 
+    .cookie("accessToken" , accessToken , accessTokenOptions)
+    .cookie("refreshToken" , refreshToken , refreshTokenOptions)
+    .json(new ApiResponse(200 , 
+        { user : loggedInUser }, 
     "User Logged in Successfully..."))
-
 });
 
 const logoutUser = asyncHandler( async (req , res) => {
-
     const refreshToken = req.cookies?.refreshToken;
     if(!refreshToken){
         throw new ApiError(400 , "No Refresh Token Provided...")
@@ -118,7 +120,8 @@ const logoutUser = asyncHandler( async (req , res) => {
     const options = {
         httpOnly : true,
         secure : process.env.NODE_ENV === "production",
-        sameSite : "Strict",
+        sameSite : "None",
+        path: "/",
     };
 
     res.clearCookie("accessToken" , options)
@@ -154,7 +157,7 @@ const refreshAccessToken = asyncHandler(async (req , res) => {
         const options = {
             httpOnly : true,
             secure : process.env.NODE_ENV === "production",
-            sameSite : "Strict",
+            sameSite : "None",
             maxAge  : 7 * 24 * 60 * 60 * 1000
         }
 
@@ -171,9 +174,16 @@ const refreshAccessToken = asyncHandler(async (req , res) => {
 });
 
 const getCurrentUser = asyncHandler (async (req , res) => {
-    const user = req.user; 
+   const user = await User.findById(req.user._id)
+   .populate("registeredEvents" , " title venue date")
+   .select("-password -refreshToken");
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
 
-    return res.status(200).json(new ApiResponse(200 , {user} , "Current User Fetched Successfully..."))
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { user }, "Current User Fetched Successfully..."));
 })
 
 export { registerUser , loginUser , logoutUser , refreshAccessToken , getCurrentUser }

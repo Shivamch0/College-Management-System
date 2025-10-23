@@ -10,7 +10,7 @@ router.route("/login").post(loginUser);
 
 router.route("/refresh-token").post(refreshAccessToken);
 
-router.route("/logout").post(verifyJWT , logoutUser);
+router.route("/logout").post( logoutUser);
 
 router.route("/current-user").get(verifyJWT , getCurrentUser)
 

@@ -38,7 +38,7 @@ const getAllEvents = asyncHandler ( async (req , res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page -1) * limit;
 
-    const { search, eventType, startDate, endDate } = req.query;
+    const { search, eventType, startDate, endDate , sortBy , sortOrder } = req.query;
 
     const query = {}
 
@@ -104,12 +104,15 @@ const registerForEvent = asyncHandler ( async (req , res) => {
     }
 
     if(event.participants.includes(req.user._id)){
-        throw new ApiError(401 , "You are already registered for this event...")
+        return res.status(200).json(new ApiResponse(201 , {} , "You have already registered for this event..."))
     }
 
     event.participants.push(req.user._id);
     event.currentParticipants++;
     await event.save({validateBeforeSave : false});
+
+    req.user.registeredEvents.push(event._id);
+    await req.user.save({ validateBeforeSave: false });
 
     await sendEmail(
         req.user.email,
@@ -135,6 +138,11 @@ const cancelRegistration = asyncHandler ( async (req , res) => {
     );
     event.currentParticipants = event.participants.length;
     await event.save({validateBeforeSave : false})
+
+     req.user.registeredEvents = req.user.registeredEvents.filter(
+    (id) => id.toString() !== event._id.toString()
+    );
+    await req.user.save({ validateBeforeSave: false });
 
     await sendEmail(
         req.user.email,

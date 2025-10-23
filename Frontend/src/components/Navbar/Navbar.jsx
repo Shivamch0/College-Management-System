@@ -12,7 +12,7 @@ function Navbar({darkMode , toggleTheme }) {
         </div>
 
         <nav className={styles.navLinks}>
-           <Link to="/">Home</Link>
+           <Link to="/profile">Profile</Link>
            <Link to="/events">Events</Link>
            <Link to="/login">Login</Link>
            <Link to="/signup">SignUp</Link>

@@ -1,13 +1,14 @@
-import app from "./app.js"
 import dotenv from "dotenv";
+dotenv.config({
+    path : ".env",
+})
+
+import app from "./app.js"
 import { connectDb } from "./db/index.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
 
-dotenv.config({
-    path : ".env",
-})
 
 const port = process.env.PORT || 4000;
 
@@ -22,7 +23,7 @@ export { io }
 connectDb()
 .then(() => {
     app.listen(port , (req , res) => {
-        console.log(`Server is running on port : ${port}`)
+        console.log(`Server is running on port : ${port}`);
     })
 })
 .catch((error) => {

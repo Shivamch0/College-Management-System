@@ -17,13 +17,15 @@ function Login() {
     validationSchema : loginSchema,
     onSubmit : async (values , action) => {
       try {
-        const response = await api.post("/users/login" , values);
-        console.log("login successfully..." , response);
+        const response = await api.post("/users/login" , values , {withCredentials : true});
+
+        localStorage.setItem("user" , JSON.stringify(response.data.data.user));
+
         action.resetForm();
         navigate("/");
       } catch (error) {
         console.error("Login failed:", error.response?.data || error.message);
-        alert(error.response?.data?.message || "Login failed. Please try again.");
+        alert(error.response?.data?.data?.message || "Login failed. Please try again.");
       }
     }
   })
