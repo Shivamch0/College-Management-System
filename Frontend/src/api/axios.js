@@ -1,8 +1,11 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api/v1",
-  withCredentials: true, 
+  baseURL:
+    import.meta.env.MODE === "development"
+      ? "/api/v1" 
+      : "https://college-management-system-zp8h.onrender.com/api/v1",
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
