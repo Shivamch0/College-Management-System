@@ -2,7 +2,7 @@ import {asyncHandler} from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import  { Event } from "../models/events.models.js";
-import { EventStats } from "../models/EventStats.model.js";
+import { EventStats } from "../models/eventStats.model.js";
 import { io } from "../server.js";
 import { sendEmail } from "../utils/email.js";
 import { eventValidationSchema , eventUpdateValidationSchema } from "../validators/event.validator.js";

@@ -2,7 +2,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.models.js";
 import { Event } from "../models/events.models.js";
-import { EventStats } from "../models/EventStats.model.js";
+import { EventStats } from "../models/eventStats.model.js";
 
 const getAdminStatus = asyncHandler (async (req , res) => {
     const totalUsers = await User.countDocuments();
