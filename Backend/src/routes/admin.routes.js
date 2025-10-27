@@ -1,5 +1,5 @@
 import express from "express";
-import { getAdminStatus, getAllUsers , getAllEvents , getAllRegistrations } from "../controllers/admin.controller.js";
+import { getAdminStatus, getAllUsers , getAllEvents , getAllRegistrations , getAdminStats } from "../controllers/admin.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 
 const router = express.Router();
@@ -11,5 +11,7 @@ router.route("/users").get(verifyJWT , getAllUsers);
 router.route("/events").get(verifyJWT , getAllEvents);
 
 router.route("/registerations").get(verifyJWT , getAllRegistrations);
+
+router.route("/stats").get(verifyJWT , getAdminStats);
 
 export default router

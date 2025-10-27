@@ -4,6 +4,8 @@ import { api } from "../../api/axios.js";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from '../../Context/userContext.js';
 import toast from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function Events() {
   const navigate = useNavigate();
@@ -38,11 +40,36 @@ function Events() {
   };
 
   useEffect(() => {
-    (async () => {
-      await fetchCurrentUser();
-      await fetchEvents();
-    })();
+  setTimeout(() => setLoading(false), 600);
   }, []);
+
+ useEffect(() => {
+  (async () => {
+    try {
+      await fetchEvents();
+    } catch (err) {
+      console.error("Failed to fetch events:", err);
+    }
+  })();
+}, []);
+
+useEffect(() => {
+  const token = localStorage.getItem("accessToken");
+  if (!token) {
+    console.log("No token found — skipping user fetch");
+    return;
+  }
+
+  (async () => {
+    try {
+      await fetchCurrentUser();
+    } catch (error) {
+      console.warn("Failed to fetch current user:", error);
+    }
+  })();
+}, []);
+
+
 
   const handleRegister = async (id) => {
     setRegisteredIds((prev) => [...prev, id]);
@@ -92,7 +119,25 @@ function Events() {
   return `${year}-${month}-${day}`;
 };
 
-  if (loading) return <p>Loading Events...</p>;
+ if (loading) {
+  return (
+    <div className={styles.eventsContainer}>
+      <h1 className={styles.title}>All Events</h1>
+      <div className={styles.eventsGrid}>
+        {[1, 2, 3, 4, 5].map((n) => (
+          <div key={n} className={styles.eventCard}>
+            <Skeleton height={25} width={200} style={{ marginBottom: "10px" }} />
+            <Skeleton count={3} style={{ marginBottom: "8px" }} />
+            <div style={{ display: "flex", gap: "10px" }}>
+              <Skeleton height={30} width={100} />
+              <Skeleton height={30} width={100} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
   if (error) return <p className={styles.error}>{error}</p>;
 
   return (

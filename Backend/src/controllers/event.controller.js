@@ -2,6 +2,7 @@ import {asyncHandler} from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import  { Event } from "../models/events.models.js";
+import { EventStats } from "../models/EventStats.model.js";
 import { io } from "../server.js";
 import { sendEmail } from "../utils/email.js";
 import { eventValidationSchema , eventUpdateValidationSchema } from "../validators/event.validator.js";
@@ -32,6 +33,16 @@ const createEvent = asyncHandler ( async (req , res) => {
         maxParticipants,
         createdBy : req.user._id,
     })
+
+    const now = new Date(event.date);
+    const month = now.toLocaleString("en-US", { month: "short" });
+    const year = now.getFullYear();
+
+    await EventStats.findOneAndUpdate(
+        { month, year },
+        { $inc: { count: 1 } },
+        { upsert: true, new: true }
+    );
 
     io.emit("Event Created..." , event);
 

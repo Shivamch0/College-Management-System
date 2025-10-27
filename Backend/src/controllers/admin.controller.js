@@ -2,6 +2,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.models.js";
 import { Event } from "../models/events.models.js";
+import { EventStats } from "../models/EventStats.model.js";
 
 const getAdminStatus = asyncHandler (async (req , res) => {
     const totalUsers = await User.countDocuments();
@@ -61,4 +62,38 @@ const getAllRegistrations = asyncHandler(async (req, res) => {
   );
 });
 
-export { getAdminStatus , getAllUsers , getAllEvents , getAllRegistrations }
+const getAdminStats = asyncHandler(async (req, res) => {
+
+   const stats = await EventStats.find({}).sort({ year: 1 });
+
+  const formattedEventsByMonth = stats.map((s) => ({
+    month: `${s.month} ${s.year}`,
+    count: s.count,
+  }));
+
+  const users = await User.find({}, "role");
+
+  const roleCounts = users.reduce((acc, user) => {
+    acc[user.role] = (acc[user.role] || 0) + 1;
+    return acc;
+  }, {});
+
+  const roleData = Object.entries(roleCounts).map(([role, value]) => ({
+    role,
+    value,
+  }));
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        eventsByMonth: formattedEventsByMonth,
+        roleData,
+      },
+      "Analytics data fetched successfully."
+    )
+  );
+});
+
+
+export { getAdminStatus , getAllUsers , getAllEvents , getAllRegistrations , getAdminStats };

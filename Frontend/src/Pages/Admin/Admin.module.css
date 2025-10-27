@@ -216,3 +216,21 @@
 .pagination span {
   font-weight: 500;
 }
+
+.chartsSection {
+  margin-top: 40px;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.chartCard {
+  background: var(--card-bg, #fff);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
