@@ -6,8 +6,6 @@ const userSchema = new mongoose.Schema({
     userName : {
         type : String,
         required : true,
-        lowercase : true,
-        trim : true,
         index : true
     },
     fullName : {

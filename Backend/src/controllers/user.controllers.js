@@ -4,7 +4,6 @@ import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 
-// Register User //
 const registerUser = asyncHandler (async (req , res) => {
     const {userName , fullName , email , password , role} = req.body;
 
@@ -20,10 +19,10 @@ const registerUser = asyncHandler (async (req , res) => {
     // Create a new user // 
     const user = await User.create({
         fullName,
-        userName : userName.toLowerCase(),
+        userName ,
         email : email.toLowerCase(),
         password,
-        role 
+        role : role.toLowerCase()
     });
 
     const accessToken = await user.generateAccessToken();
@@ -43,7 +42,7 @@ const registerUser = asyncHandler (async (req , res) => {
     const options = {
         httpOnly : true,
         secure : process.env.NODE_ENV === "production",
-        sameSite : "None",
+        sameSite : "Lax",
         maxAge : 7 * 24 * 60 * 60 * 1000
     };
 
@@ -51,7 +50,7 @@ const registerUser = asyncHandler (async (req , res) => {
     .cookie("accessToken" , accessToken , options)
     .cookie("refreshToken" , refreshToken , options)
     .json(
-        new ApiResponse(200 , {user : createdUser , accessToken , refreshToken} , "User Created Successfully...")
+        new ApiResponse(200 , {user : createdUser} , "User Created Successfully...")
     )
  
 });
@@ -82,7 +81,7 @@ const loginUser = asyncHandler(async(req , res) => {
     const accessTokenOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "None",
+    sameSite: "Lax",
     maxAge: 15 * 60 * 1000 // 15 min
     };
 
@@ -120,7 +119,7 @@ const logoutUser = asyncHandler( async (req , res) => {
     const options = {
         httpOnly : true,
         secure : process.env.NODE_ENV === "production",
-        sameSite : "None",
+        sameSite : "Lax",
         path: "/",
     };
 
@@ -157,7 +156,7 @@ const refreshAccessToken = asyncHandler(async (req , res) => {
         const options = {
             httpOnly : true,
             secure : process.env.NODE_ENV === "production",
-            sameSite : "None",
+            sameSite : "Lax",
             maxAge  : 7 * 24 * 60 * 60 * 1000
         }
 

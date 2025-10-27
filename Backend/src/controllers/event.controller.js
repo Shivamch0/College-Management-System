@@ -4,11 +4,23 @@ import {ApiResponse} from "../utils/ApiResponse.js";
 import  { Event } from "../models/events.models.js";
 import { io } from "../server.js";
 import { sendEmail } from "../utils/email.js";
+import { eventValidationSchema , eventUpdateValidationSchema } from "../validators/event.validator.js";
 
 const createEvent = asyncHandler ( async (req , res) => {
+
+    const  {error } = eventValidationSchema.validate(req.body , {abortEarly : false});
+    if(error){
+        const messages = error.details.map(detail => detail.message);
+        throw new ApiError(400, messages.join(", "));
+    }
+
+    if (req.user.role !== "admin" && req.user.role !== "organizer") {
+    throw new ApiError(403, "Only admins or organizers can create events");
+    }
+
     const {title , description , date , venue , eventType , maxParticipants} = req.body;
-    if(!title || !date || !venue ){
-        throw new ApiError(401 , "Title , Date and Venue are required...")
+    if (!title || !date || !venue) {
+    throw new ApiError(400, "Title , Date and Venue are required...");
     }
 
     const event = await Event.create({
@@ -63,7 +75,7 @@ const getAllEvents = asyncHandler ( async (req , res) => {
     const sortField = sortBy || "date";
     const sortDirection = sortOrder === "asc" ? 1 : -1;
 
-    const events = await Event.find(query).populate("createdBy" , "userName email").sort({ [sortField] : sortDirection}).skip(skip).limit(limit);
+    const events = await Event.find(query).populate("createdBy" , "_id userName email").sort({ [sortField] : sortDirection}).skip(skip).limit(limit);
 
     const totalEvents = await Event.countDocuments(query);
     const totalPages = Math.ceil(totalEvents / limit);
@@ -96,10 +108,10 @@ const getEventByID = asyncHandler ( async (req , res) => {
 const registerForEvent = asyncHandler ( async (req , res) => {
     const event = await Event.findById(req.params.id);
     if(!event){
-        throw new ApiError(401 , "Event not found...");
+        throw new ApiError(404 , "Event not found...");
     }
 
-    if(event.currentParticipants >= event.maxParticipants){
+    if(event.maxParticipants && event.currentParticipants >= event.maxParticipants){
         throw new ApiError(400, "Event is already full.");
     }
 
@@ -130,7 +142,7 @@ const registerForEvent = asyncHandler ( async (req , res) => {
 const cancelRegistration = asyncHandler ( async (req , res) => {
     const event = await Event.findById(req.params.id);
     if(!event){
-        throw new ApiError(401 , "Event not found...");
+        throw new ApiError(404 , "Event not found...");
     }
 
     event.participants = event.participants.filter(
@@ -156,10 +168,24 @@ const cancelRegistration = asyncHandler ( async (req , res) => {
 });
 
 const updateEvent = asyncHandler ( async (req , res) => {
+    
+    const { error } = eventUpdateValidationSchema.validate(req.body, { abortEarly: false });
+    if (error) {
+        const messages = error.details.map(detail => detail.message);
+        throw new ApiError(400, messages.join(", "));
+    }
+
     const event = await Event.findByIdAndUpdate(req.params.id , req.body , {new : true});
     if(!event){
-        throw new ApiError(401 , "Event not found...");
+        throw new ApiError(404 , "Event not found...");
     }
+
+    if (req.user.role !== "admin" && event.createdBy.toString() !== req.user._id.toString()) {
+        throw new ApiError(403, "You are not allowed to update this event");
+    }
+
+    Object.assign(event , req.body);
+    await event.save();
 
     await sendEmail(
         req.user.email,
@@ -167,6 +193,7 @@ const updateEvent = asyncHandler ( async (req , res) => {
         `You have successfully update the ${event.title} that was going to held on ${event.date} at ${event.venue}`
     )
 
+    
     io.emit("Event Updated..." , event);
 
     return res.status(200).json(new ApiResponse(200 , event , "Event Update Successfully..."))
@@ -175,7 +202,7 @@ const updateEvent = asyncHandler ( async (req , res) => {
 const deleteEvent = asyncHandler ( async (req , res) => {
     const event = await Event.findByIdAndDelete(req.params.id);
     if(!event){
-        throw new ApiError(401 , "Event not found...");
+        throw new ApiError(404 , "Event not found...");
     }
 
      await sendEmail(
@@ -188,6 +215,5 @@ const deleteEvent = asyncHandler ( async (req , res) => {
 
     return res.status(200).json(new ApiResponse(200 , event , "Event Delete Successfully..."))
 });
-
 
 export { createEvent , getAllEvents , getEventByID , registerForEvent , cancelRegistration , updateEvent , deleteEvent}

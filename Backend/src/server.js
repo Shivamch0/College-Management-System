@@ -22,7 +22,7 @@ export { io }
 
 connectDb()
 .then(() => {
-    app.listen(port , (req , res) => {
+    server.listen(port , (req , res) => {
         console.log(`Server is running on port : ${port}`);
     })
 })

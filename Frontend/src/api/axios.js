@@ -1,14 +1,13 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api/v1", // ✅ works perfectly with your proxy
-  withCredentials: true, // ✅ required for cookies
+  baseURL: "/api/v1",
+  withCredentials: true, 
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// ====== Token Refresh Logic ======
 let isRefreshing = false;
 let failedQueue = [];
 
@@ -21,20 +20,13 @@ const processQueue = (error, token = null) => {
 };
 
 api.interceptors.response.use(
-  (response) => response, // ✅ success: just return response
+  (response) => response, 
   async (error) => {
     const originalRequest = error.config;
 
     // 🔥 Case: Access token expired
-    if (
-      error.response &&
-      error.response.data?.message === "Access token expired. Please refresh token." &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
-
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
-        // Wait for refresh to complete
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -42,6 +34,7 @@ api.interceptors.response.use(
           .catch((err) => Promise.reject(err));
       }
 
+      originalRequest._retry = true;
       isRefreshing = true;
 
       try {

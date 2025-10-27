@@ -4,6 +4,7 @@ import { createEvent , getAllEvents , getEventByID , registerForEvent , cancelRe
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { authorizeRoles } from "../middlewares/role.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
+import { checkEventOwnership } from "../middlewares/checkEventOwnership.middleware.js";
 
 const router = express.Router();
 
@@ -20,9 +21,9 @@ router.route("/create").post(verifyJWT ,
                             validate,
                             createEvent);
 
-router.route("/:id/update").put(verifyJWT , authorizeRoles("admin" , "organizer") , updateEvent);
+router.route("/:id/update").put(verifyJWT , authorizeRoles("admin" , "organizer") , checkEventOwnership , updateEvent);
 
-router.route("/:id/delete").delete(verifyJWT , authorizeRoles("admin" , "organizer") , deleteEvent);
+router.route("/:id/delete").delete(verifyJWT , authorizeRoles("admin" , "organizer") , checkEventOwnership , deleteEvent);
 
 router.route("/:id/register").post(verifyJWT , authorizeRoles("student") , registerForEvent);
 router.route("/:id/cancel").post(verifyJWT , authorizeRoles("student") , cancelRegistration);

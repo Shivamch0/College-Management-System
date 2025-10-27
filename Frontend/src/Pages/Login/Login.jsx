@@ -1,13 +1,16 @@
-import React from 'react';
+import React , { useContext } from 'react';
 import styles from "./Login.module.css";
 import {Formik , useFormik } from "formik"
 import {Link, useNavigate} from "react-router-dom"
 import { loginSchema } from '../../schemas/loginSchema';
 import { api } from '../../api/axios.js';
+import { UserContext } from "../../Context/userContext.js";
+import toast from "react-hot-toast";
 
 function Login() {
 
   const navigate = useNavigate();
+  const {login} = useContext(UserContext);
 
   const {values , errors , touched , handleChange , handleSubmit} = useFormik({
     initialValues : {
@@ -18,11 +21,20 @@ function Login() {
     onSubmit : async (values , action) => {
       try {
         const response = await api.post("/users/login" , values , {withCredentials : true});
-
-        localStorage.setItem("user" , JSON.stringify(response.data.data.user));
+        const user = response.data.data.user;
+        login(user)
+        toast.success(`${user.fullName} LoggedIn Successfully...`);
 
         action.resetForm();
-        navigate("/");
+        if(user.role === "admin"){
+          navigate("/admin/dashboard");
+        }else if(user.role === "student"){
+          navigate("/events");
+        }else if(user.role === "organizer"){
+          navigate("/events");
+        }else{
+          navigate("/")
+        }
       } catch (error) {
         console.error("Login failed:", error.response?.data || error.message);
         alert(error.response?.data?.data?.message || "Login failed. Please try again.");
