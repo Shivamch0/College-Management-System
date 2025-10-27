@@ -75,48 +75,41 @@ FRONTEND_URL=https://your-frontend.vercel.app
 EMAIL_USER=your_email@example.com
 EMAIL_PASS=your_email_app_password
 🧪 Run Locally
+
 🖥 Backend Setup
-bash
-Copy code
 cd Backend
 npm install
 npm run dev
+
 💻 Frontend Setup
-bash
-Copy code
 cd Frontend
 npm install
 npm run dev
+
 Frontend runs on http://localhost:5173
 Backend runs on http://localhost:3000
 
 📦 API Overview
 🔑 Auth Routes
-bash
-Copy code
 POST   /api/v1/users/register
 POST   /api/v1/users/login
 POST   /api/v1/users/logout
+
 📅 Event Routes
-bash
-Copy code
 GET    /api/v1/events
 POST   /api/v1/events
 PUT    /api/v1/events/:id
 DELETE /api/v1/events/:id
+
 🧠 Admin Routes
-bash
-Copy code
 GET    /api/v1/admin/stats
 GET    /api/v1/admin/users
 GET    /api/v1/admin/events
 GET    /api/v1/admin/registrations
+
 🌍 Deployment
 🔹 Frontend (Vercel)
 Build your frontend:
-
-bash
-Copy code
 npm run build
 Push to GitHub and connect your repo to Vercel
 
@@ -130,13 +123,13 @@ Deploy to Render
 Add all environment variables in Render’s dashboard.
 
 Update CORS settings:
-
 js
 Copy code
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true,
 }));
+
 🔹 Database (MongoDB Atlas)
 Create a cluster on MongoDB Atlas
 
@@ -148,11 +141,8 @@ Copy connection string and paste into your .env.
 Admin dashboard charts are powered by a separate EventStats model:
 
 Tracks total events created per month and year.
-
 Stats remain even if events are deleted.
 
-js
-Copy code
 const eventStatsSchema = new mongoose.Schema({
   month: { type: String, required: true },
   year: { type: Number, required: true },
@@ -161,19 +151,14 @@ const eventStatsSchema = new mongoose.Schema({
 When a new event is created, the corresponding month’s count is incremented.
 
 🧑‍💻 Author
-Your Name — Full Stack Developer
-📧 your.email@example.com
-🌐 Portfolio
-🔗 LinkedIn
-💻 GitHub
+Your Name — Shivam
+📧 shivamch0865@gmail.com
+🔗 https://www.linkedin.com/in/shivam-choudhary-28a019346/?skipRedirect=true
+💻 https://github.com/Shivamch0
 
 ⭐ Acknowledgements
 React Documentation
-
 Express.js Guide
-
 MongoDB Atlas
-
 Render Deployment
-
 Vercel Hosting
