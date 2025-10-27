@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Navbar.module.css";
-import { UserContext } from "../../context/UserContext.js";
+import { UserContext } from "../../Context/userContext.js";
 
 function Navbar({ darkMode, toggleTheme }) {
   const { user } = useContext(UserContext); 
