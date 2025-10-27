@@ -6,7 +6,8 @@ function AdminUsers({darkMode}) {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-
+ 
+  // fetch Users //
   const fetchUsers = async () => {
     try {
       const res = await api.get("/admin/users", { withCredentials: true });
