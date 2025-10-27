@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../../api/axios.js"
-import styles from "./admin.module.css"; // or your css file
+import styles from "./Admin.module.css";
 
 const AdminRegistrations = ({darkMode}) => {
   const [registrations, setRegistrations] = useState([]); // ✅ initialize as empty array
