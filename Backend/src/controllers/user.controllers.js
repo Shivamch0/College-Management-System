@@ -40,9 +40,10 @@ const registerUser = asyncHandler (async (req , res) => {
     };
 
     const options = {
-        httpOnly : true,
-        secure : process.env.NODE_ENV === "production",
-        sameSite : "none",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        path: "/",
         maxAge : 7 * 24 * 60 * 60 * 1000
     };
 
@@ -79,17 +80,19 @@ const loginUser = asyncHandler(async(req , res) => {
     await user.save({validateBeforeSave : false})
 
     const accessTokenOptions = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "none",
-    maxAge: 15 * 60 * 1000 // 15 min
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        path: "/",
+        maxAge: 15 * 60 * 1000 
     };
 
     const refreshTokenOptions = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "Strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     };
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
@@ -154,9 +157,10 @@ const refreshAccessToken = asyncHandler(async (req , res) => {
         await user.save({validateBeforeSave : false})
 
         const options = {
-            httpOnly : true,
-            secure : process.env.NODE_ENV === "production",
-            sameSite : "none",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "none",
+            path: "/",
             maxAge  : 7 * 24 * 60 * 60 * 1000
         }
 
