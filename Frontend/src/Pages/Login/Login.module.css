@@ -15,6 +15,10 @@
   display: none;
 }
 
+.leftContainer .userImage {
+  border-radius: 50%;
+}
+
 /* Form Container */
 .rightContainer {
   width: 100%; /* 🔥 full width */
@@ -37,6 +41,11 @@
   text-align: center;
 }
 
+.rightContainer p a{
+  color: white;
+  margin-left: 5px;
+}
+
 /* Inputs */
 .rightContainer form {
   width: 100%;
@@ -46,7 +55,10 @@
   width: 100%;
   padding: 12px;
   font-size: 0.95rem;
+  border-radius: 10px;
 }
+
+
 
 /* Button */
 .signupBtn {
