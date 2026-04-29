@@ -5,7 +5,6 @@ import Login from './Pages/Login/Login'
 import Events from './Pages/Events/Events'
 import SignUp from './Pages/SignUp/SignUp'
 import Navbar from './components/Navbar/Navbar'
-import styles from '../src/Pages/Home/Home.module.css';
 import Profile from './Pages/Profile/Profile'
 import Admin from './Pages/Admin/Admin';
 import { UserContext } from './Context/userContext.js';
@@ -16,6 +15,8 @@ import CreateEvent from './Pages/Events/Crud/CreateEvent.jsx'
 import UpdateEvent from './Pages/Events/Crud/UpdateEvent.jsx';
 import { Toaster } from "react-hot-toast";
 import ErrorBoundary from './components/ErrorBoundary.jsx'
+
+import styles from '../src/Pages/Home/Home.module.css';
 
 function App() {
 
