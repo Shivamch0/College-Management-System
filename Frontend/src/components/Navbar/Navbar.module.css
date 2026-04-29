@@ -158,3 +158,13 @@
   transform: translateX(20px);
 }
 
+.hideOnMobile {
+  display: none;
+}
+
+
+@media (min-width: 768px) {
+  .hideOnMobile {
+    display: inline-block; /* or flex if needed */
+  }
+}

@@ -14,7 +14,7 @@ function Navbar({ darkMode, toggleTheme }) {
       </div>
 
       <nav className={styles.navLinks}>
-        <Link to="/events">Events</Link>
+        <Link to="/events" className={styles.hideOnMobile}>Events</Link>
 
         {user?.role === "admin" && (
           <Link to="/admin/dashboard">Dashboard</Link>
@@ -22,8 +22,8 @@ function Navbar({ darkMode, toggleTheme }) {
 
         {!user ? (
           <>
-            <Link to="/login">Login</Link>
-            <Link to="/signup">SignUp</Link>
+            <Link to="/login" className={styles.hideOnMobile}>Login</Link>
+            <Link to="/signup" className={styles.hideOnMobile}>SignUp</Link>
           </>
         ) : (
           <>
