@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://college-management-system-zp8h.onrender.com',
+        target: 'https://college-management-system-1-7or1.onrender.com',
         changeOrigin: true,
         secure: false,
       },

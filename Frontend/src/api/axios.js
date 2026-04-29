@@ -1,10 +1,12 @@
 import axios from "axios";
 
+const BASE_URL =
+  import.meta.env.MODE === "development"
+    ? "/api/v1"
+    : `${import.meta.env.VITE_API_URL}/api/v1`;
+
 const api = axios.create({
-  baseURL:
-    import.meta.env.MODE === "development"
-      ? "/api/v1" 
-      : "https://college-management-system-zp8h.onrender.com/api/v1",
+  baseURL: BASE_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -14,42 +16,36 @@ const api = axios.create({
 let isRefreshing = false;
 let failedQueue = [];
 
-const processQueue = (error, token = null) => {
+const processQueue = (error) => {
   failedQueue.forEach((prom) => {
     if (error) prom.reject(error);
-    else prom.resolve(token);
+    else prom.resolve();
   });
   failedQueue = [];
 };
 
 api.interceptors.response.use(
-  (response) => response, 
+  (res) => res,
   async (error) => {
     const originalRequest = error.config;
 
-    // 🔥 Case: Access token expired
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        })
-          .then(() => api(originalRequest))
-          .catch((err) => Promise.reject(err));
+        }).then(() => api(originalRequest));
       }
 
       originalRequest._retry = true;
       isRefreshing = true;
 
       try {
-        console.log("🔄 Refreshing access token...");
-        await api.post("/users/refresh-token", {}, { withCredentials: true });
-
+        await api.post("/users/refresh-token");
         processQueue(null);
-        return api(originalRequest); // ✅ Retry original request
+        return api(originalRequest);
       } catch (err) {
-        processQueue(err, null);
-        console.error("Token refresh failed:", err);
-        window.location.href = "/login"; // 🔁 Redirect to login if refresh fails
+        processQueue(err);
+        window.location.replace("/login");
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
