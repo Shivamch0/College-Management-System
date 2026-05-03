@@ -35,8 +35,6 @@ Built with **MERN Stack (MongoDB, Express.js, React, Node.js)**.
 
 ---
 
-
-
 ## 🧰 Tech Stack
 
 | Layer | Technology |
@@ -49,8 +47,6 @@ Built with **MERN Stack (MongoDB, Express.js, React, Node.js)**.
 | **Deployment** | Vercel (Frontend), Render (Backend), MongoDB Atlas |
 
 ---
-
-
 
 ## 📸 Screenshots
 
