@@ -106,8 +106,6 @@ GET    /api/v1/admin/users
 GET    /api/v1/admin/events
 GET    /api/v1/admin/registrations
 
-
-
 🌍 Deployment
 🔹 Frontend (Vercel)
 Build your frontend:
