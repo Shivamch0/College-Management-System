@@ -61,9 +61,6 @@ Built with **MERN Stack (MongoDB, Express.js, React, Node.js)**.
 *(Replace with your actual screenshot paths)*
 
 ---
-
-
-
 ## ⚙️ Environment Variables
 
 Create a `.env` file in your **Backend** folder and add:
